@@ -7,6 +7,23 @@ log.info """\
     .stripIndent()
 
 
+process map_species_to_genome_link {
+    tag "Mapping species to reference genome for $species_name using ${params.ref_genomes_csv_path}"
+    
+    input:
+    val species_name
+    
+    output:
+    env genome_link 
+
+    script:
+    """
+    genome_link=\$(awk -F',' -v species="$species_name" 'species == \$1 {print \$2}' ${params.ref_genomes_csv_path})
+    
+    """
+}
+
+
 process set_up_host_db {
     tag "Downloading human reads database to ${params.host_db_path}\n"
     publishDir path: "$projectDir" 
